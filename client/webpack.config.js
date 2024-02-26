@@ -18,12 +18,49 @@ module.exports = () => {
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-      
+      new HtmlWebpackPlugin({
+        template: './src/index.html', // html temp
+        filename: 'index.html', 
+        chunks: ['main'], 
+      }),
+      new WebpackPwaManifest({
+        filename: 'manifest.json',
+        name: 'J.A.T.E',
+        short_name: 'JATE',
+        description: 'Just Another Text Editor',
+        start_url: '/',
+        background_color: '#ffffff',
+        theme_color: '#31a9e1',
+        icons: [
+          {
+            src: path.resolve('src/assets/icons/icon_96x96.png'),
+            sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+            destination: path.join('icons'),
+          },
+        ],
+      }),
+      new InjectManifest({
+        swSrc: './src-sw.js', // sw file
+        swDest: 'service-worker.js', 
+      }),
     ],
-
     module: {
       rules: [
-        
+        {
+          test: /\.css$/, // css file
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.js$/, // babel
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-object-rest-spread'],
+            },
+          },
+        },
       ],
     },
   };
