@@ -26,15 +26,17 @@ export const putDb = async (content) => {
 };
 
 // TODO: Add logic for a method that gets all the content from the database
-export const putDb = async (content) => {
+export const getDb = async () => {
   try {
     const db = await initdb();
-    const tx = db.transaction('jate', 'readwrite');
+    const tx = db.transaction('jate', 'readonly');
     const store = tx.objectStore('jate');
-    await store.add({ content });
-    console.log('Content added to the database successfully');
+    const content = await store.getAll();
+    console.log('Content retrieved from the database:', content);
+    return content;
   } catch (error) {
-    console.error('Error adding content to the database:', error);
+    console.error('Error getting content from the database:', error);
+    return null;
   }
 };
 
